@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.example.eltobgy.memorycardgame.activities.GameStartScreen;
+import com.example.eltobgy.memorycardgame.activities.GameScreenActivity;
 import com.example.eltobgy.memorycardgame.models.Card;
 
 import java.util.Random;
@@ -17,16 +17,30 @@ import static java.lang.String.valueOf;
 
 public class GameBasicFunctions {
     public final String TAG = GameBasicFunctions.class.getSimpleName();
-    public int randomNum;
+    public static int randomNum;
+    public static int maxRange;
     public int randomOp;
     final Handler delayHandler = new Handler();
     String cardContent;
     int[] factors = new int[0];
-    Random rand = new Random();
-    public static Card[] cardArray = GameStartScreen.cardArray;
+    static Random rand = new Random();
+    public static Card[] cardArray = GameScreenActivity.cardArray;
     //TODO get the num of flipped and selected from the Grid object.
     //TODO the card???!
     //TODO the numOfFlippedCards? static? or return.
+    //cardsNums starting from 1 as a min as 1*8 =8,
+    public static int[]numOfRowsAndCols (int cardsNum){
+        int[] rowsCols = new int [1];
+        int totalCardsNum = cardsNum * 8;
+       boolean perfectSqrt = Helper.checkingPerfectSquare(totalCardsNum);
+       if(perfectSqrt){ rowsCols[0] = (int) Math.sqrt(totalCardsNum);
+           rowsCols[1] = rowsCols[0] ;
+       }
+       else{rowsCols[1] = 4;
+       //TODO fix this to be more dynamic.
+       rowsCols[0] = totalCardsNum/rowsCols[1];}
+      return rowsCols;
+    }
     public void flipCardUp(int card, int numFlippedCards, int[] selectedCards) {
         if(numFlippedCards <= 2){
             if(selectedCards[0] == -1) {
@@ -116,9 +130,9 @@ public class GameBasicFunctions {
      * @param range which depends on the selected level
      * @return the random number
      */
-    public int generateRandomNumber(int range, int num, int maxRange) {
+    public static int generateRandomNumber(int typeOfGeneration , int num, int maxRange) {
 
-        switch (range) {
+        switch (typeOfGeneration) {
             case 0: {
                 randomNum = rand.nextInt(maxRange) + 2;
                 break;
@@ -184,7 +198,7 @@ public class GameBasicFunctions {
 
     /**
      * @param randomOp
-     * @param number
+     * @param number -> the previously generated random
      * @param maxRange
      * @return the card content as a string.
      */
@@ -239,4 +253,24 @@ public class GameBasicFunctions {
         }
         return cardContent;
     }
+    //TODO adjust later.
+    public static int getMaxRange (int range){
+        switch (range) {
+            case 0: {
+                maxRange = 9 ;
+                break;
+            }
+            case 1: {
+
+                maxRange = 20;
+                break;
+            }
+            case 2: {
+                maxRange = 32;
+                break;
+            }
+        }
+
+
+        return maxRange;}
 }

@@ -22,4 +22,13 @@ public class Helper {
         result[org.length] = added;
         return result;
     }
+    public static boolean checkingPerfectSquare(int number) {
+        double sqrt = Math.sqrt(number);
+        int x = (int) sqrt;
+        if (Math.pow(sqrt, 2) == Math.pow(x, 2))
+        return true;
+        else {
+            return false;
+        }
+    }
 }

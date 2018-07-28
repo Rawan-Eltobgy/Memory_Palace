@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.GameStartScreen">
+        <activity android:name=".activities.TestingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
