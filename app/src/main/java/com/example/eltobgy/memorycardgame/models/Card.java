@@ -22,8 +22,8 @@ public class Card implements Serializable {
         private int row;
         private int col;
         private Bitmap frontCard;
-        private Bitmap backCard;
-        public Card(int state, boolean flipped, Bitmap frontCard, Bitmap backCard) {
+        private int backCard;
+        public Card(int state, boolean flipped, Bitmap frontCard, int backCard) {
 
             this.state  = state;
             this.frontCard = frontCard;
@@ -33,7 +33,13 @@ public class Card implements Serializable {
             this.col            = -1;
             this.animationSteps = 0;
         }
-
+    public Card( boolean flipped,  int backCard) {
+        this.backCard = backCard;
+        this.flipped = false;
+        this.row            = -1;
+        this.col            = -1;
+        this.animationSteps = 0;
+    }
 
         public int getState() {
             return state;

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.example.eltobgy.memorycardgame.R;
 import com.example.eltobgy.memorycardgame.activities.GameScreenActivity;
 import com.example.eltobgy.memorycardgame.models.Card;
 
@@ -21,9 +22,19 @@ public class GameBasicFunctions {
     public static int maxRange;
     public int randomOp;
     final Handler delayHandler = new Handler();
-    String cardContent;
-    int[] factors = new int[0];
+    static String cardContent;
+    static int[] factors = new int[0];
     static Random rand = new Random();
+    public static int[] cardBacks = {
+            R.drawable.card1,
+            R.drawable.card2,
+            R.drawable.card3,
+    };
+    //TODO test this method.
+    public static int getRandomBack(){
+        int cardBackId = generateRandomNumber(2,0,2);
+        return cardBacks[cardBackId];
+    }
     public static Card[] cardArray = GameScreenActivity.cardArray;
     //TODO get the num of flipped and selected from the Grid object.
     //TODO the card???!
@@ -107,6 +118,7 @@ public class GameBasicFunctions {
                 imageButtonArray[cardsFlipped[0]].setVisibility(View.INVISIBLE);
                 imageButtonArray[cardsFlipped[1]].setVisibility(View.INVISIBLE);
 
+
                 flipCardDown(cardsFlipped[0] , 2, cardsFlipped);
                 flipCardDown(cardsFlipped[1],2,cardsFlipped);
 
@@ -168,7 +180,7 @@ public class GameBasicFunctions {
      * @param number
      * @return an array of factors of number.
      */
-    public int[] numFactors(int number) {
+    public static int[] numFactors(int number) {
 
         if (number % 2 == 0) {
             while (number % 2 == 0) {
@@ -202,10 +214,11 @@ public class GameBasicFunctions {
      * @param maxRange
      * @return the card content as a string.
      */
-    public String generateCard(int randomOp, int number, int maxRange) {
+    public static String generateCard(int randomOp, int number, int maxRange)  {
         int num1;
         int num2;
         int num3; // for division
+        //TODO generate a random op function.
         switch (randomOp) {
             //0 -> addition, 1-> subtraction, 2-> multiplication, 3-> division.
             case 0: {
@@ -267,6 +280,10 @@ public class GameBasicFunctions {
             }
             case 2: {
                 maxRange = 32;
+                break;
+            }
+            case 3:{
+                maxRange =  100;
                 break;
             }
         }
