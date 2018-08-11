@@ -1,5 +1,6 @@
 package com.example.eltobgy.memorycardgame.activities;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,7 @@ import android.widget.GridLayout;
 import android.widget.ToggleButton;
 
 import com.example.eltobgy.memorycardgame.R;
+import com.example.eltobgy.memorycardgame.fragments.LevelClearedDialog;
 import com.example.eltobgy.memorycardgame.models.Card;
 import com.example.eltobgy.memorycardgame.models.Game;
 import com.example.eltobgy.memorycardgame.utlis.FigureFunctionality;
@@ -156,20 +158,24 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
            addButtonsToGrid(gameType);
     }
 //checking
+
     public void initNumberOpGame(int gameType){
         uniqueCardCount = (rowsCols[0]* rowsCols[1])/2;
         maxRange = GameBasicFunctions.getMaxRange(cardRange);
         int tempNum;
         for (int i = 0 ; i <= uniqueCardCount ; i ++ ){
             //TODO check the num.
-            tempNum = GameBasicFunctions.generateRandomNumber(cardRange, 2,maxRange);
+
+            Collections.sort(availableCardFaces);
+            Helper.showLog(TAG,"avaliable card after sorting "+availableCardFaces);
+
+            tempNum = GameBasicFunctions.generateRandomNumber(0, 2,maxRange, availableCardFaces);
             Helper.showLog(TAG,"temp num"+tempNum);
-            Helper.showLog(TAG,"avaliable card "+availableCardFaces);
+            //Helper.showLog(TAG,"avaliable card "+availableCardFaces);
             if(i>0){
-                Helper.showLog(TAG,"The condition is passed");
             while(availableCardFaces.contains(tempNum)) {
                 Helper.showLog(TAG,"Loop");
-                tempNum = GameBasicFunctions.generateRandomNumber(cardRange, 2,maxRange);
+                tempNum = GameBasicFunctions.generateRandomNumber(0, 2,maxRange, availableCardFaces);
                 Helper.showLog(TAG,"maxRange loop"+maxRange);
                 Helper.showLog(TAG,"cardRange loop"+cardRange);
                 Helper.showLog(TAG,"avaliable card loop"+availableCardFaces);
@@ -223,9 +229,9 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
         final String[] s1 = {""};
         final String[] temp = {""};
        cardWidHigh = calculateCardWidth(rowsCols);
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
+
         for (int i = 0; i < totalCardsNum ; i++) {
+            Helper.showLog(TAG," i = "+i);
             final ToggleButton button = new ToggleButton(this);
             //TODO a different approach
             button.setTextOff("");
@@ -239,6 +245,7 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     if (isChecked) {
+
                         //TODO remove this.
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
@@ -273,7 +280,7 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                                     s2.trim();
                                     button.setTextOn(s2);
                                 }
-                                button.setTextS
+                                //button.setTextS
                                 button.setTextColor(ResourcesCompat.getColor(getResources(), R.color.Black, null));
                                //TODO adjust this.
                                 button.setBackground(currentCardFront);
@@ -286,9 +293,13 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                     }
                 });
             }
-             //addView(View child, int width, int height).
+            // addView(View child, int width, int height).
+           // Helper.showLog(TAG, "button = "+button);
             boardLayout.addView(button, cardWidHigh[0], cardWidHigh[1]);
+            timer.setBase(SystemClock.elapsedRealtime());
+            timer.start();
         }
+        //
     }
     protected void checkAgainstActiveCard(final ToggleButton newFlip, final String s1) {
         if (activeCard != null) {
@@ -318,8 +329,9 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                     }
                 }, 150);
 
-                if (pairsFound == uniqueCardCount) {
+                if (pairsFound == uniqueCardCount ) {
                     //TODO next level function.
+                    timer.stop();
                     levelCompleted();
 
                 }
@@ -337,7 +349,7 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                         newFlip.setBackground(currentCardBack);
                         newFlip.setEnabled(true);
                     }
-                }, 350);
+                }, 250);
             }
         } else { //First card to be flipped
             s2 = s1;
@@ -349,8 +361,32 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
 
     private void levelCompleted() {
         Helper.showToast(this,"You Win!");
+        Bundle args = new Bundle();
+       // args.putInt("score", scoreValue);
+        args.putString("time", timer.getText().toString());
+       // args.putString("type", type);
+        DialogFragment winDialog = new LevelClearedDialog();
+        winDialog.setArguments(args);
+        winDialog.setCancelable(false);
+        winDialog.show(getFragmentManager(), "Settings Dialog");
+    }
+    public void onComplete(Bundle callbackData) {
+        String dialogName = callbackData.getString("dialog");
+
+        if(dialogName.equals("nextlevel")) {
+            Helper.showLog(TAG,"Level up");
+        }
+        else if(dialogName.equals("mainMenu")) {
+            Intent myIntent = new Intent(this, TestingScreen.class);
+            startActivity(myIntent);
+
+        }
     }
 
+    public void onBackPressed() {
+        //TODO return to main or testing screen fn.
+        //android back button has been pressed
+    }
     public void initializeBoard() {
         rowsCols = GameBasicFunctions.numOfRowsAndCols(cardNum);
         boardLayout.setRowCount(rowsCols[0]);
@@ -371,10 +407,10 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
         cardWidHigh[0] = (int) (width / (rowsCols[1] + .25));
         cardWidHigh[1] = (int) (height / (rowsCols[0] + 2));
        // textSize =
-        p.width = cardWidHigh[0];
-        p.height = cardWidHigh[1];
-        boardLayout.setLayoutParams(p);
-        boardLayout.getViewParent().invalidate();
+       // p.width = cardWidHigh[0];
+       // p.height = cardWidHigh[1];
+        //boardLayout.setLayoutParams(p);
+        //boardLayout.getViewParent().invalidate();
      return cardWidHigh;
     }
 }

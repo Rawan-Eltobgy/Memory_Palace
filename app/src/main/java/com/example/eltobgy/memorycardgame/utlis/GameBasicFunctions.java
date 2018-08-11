@@ -1,13 +1,12 @@
 package com.example.eltobgy.memorycardgame.utlis;
 
 import android.os.Handler;
-import android.view.View;
-import android.widget.ImageButton;
 
 import com.example.eltobgy.memorycardgame.R;
 import com.example.eltobgy.memorycardgame.activities.GameScreenActivity;
 import com.example.eltobgy.memorycardgame.models.Card;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.String.valueOf;
@@ -32,7 +31,9 @@ public class GameBasicFunctions {
     };
     //TODO test this method.
     public static int getRandomBack(){
-        int cardBackId = generateRandomNumber(2,0,2);
+        ArrayList<Integer> ex = new ArrayList<Integer>();
+
+        int cardBackId = generateRandomNumber(2,0,2,ex);
         return cardBacks[cardBackId];
     }
     public static Card[] cardArray = GameScreenActivity.cardArray;
@@ -57,99 +58,33 @@ public class GameBasicFunctions {
 
         return rowsCols;
     }
-    public void flipCardUp(int card, int numFlippedCards, int[] selectedCards) {
-        if(numFlippedCards <= 2){
-            if(selectedCards[0] == -1) {
-                selectedCards[0] = card;
-            }
-            else if(selectedCards[1] == -1) {
-                selectedCards[1] = card;
-            }
 
-            numFlippedCards ++;
-        }
-    }
-
-    public void flipCardDown(int card, int numFlippedCards, int[] selectedCards) {
-        if(numFlippedCards >= 1){
-            if(selectedCards[0] == card) {
-                selectedCards[0] = -1;
-            }
-            else if(selectedCards[1] == card) {
-                selectedCards[1] = -1;
-            }
-
-            numFlippedCards --;
-        }
-    }
-    public void cardsNotMatched(final int[] cardsFlipped, final ImageButton[] imageButtonArray){
-        //cards don't match
-
-
-        //flip the cards back and prevent input during the delay
-        for(ImageButton imageButton : imageButtonArray){
-            imageButton.setEnabled(false);
-        }
-
-        delayHandler.postDelayed(new Runnable() {
-            public void run() {
-                cardArray[cardsFlipped[0]].setCardFlipped(false);
-                cardArray[cardsFlipped[1]].setCardFlipped(false);
-               // imageButtonArray[cardsFlipped[0]].setImageBitmap(cardArray[cardsFlipped[0]].getBackCard());
-               // imageButtonArray[cardsFlipped[1]].setImageBitmap(cardArray[cardsFlipped[1]].getBackCard());
-
-                flipCardDown(cardsFlipped[0] , 2, cardsFlipped);
-                flipCardDown(cardsFlipped[1],2,cardsFlipped);
-
-                for(ImageButton imageButton : imageButtonArray){
-                    imageButton.setEnabled(true);
-                }
-
-                //reduce the players score
-                //reduceScore();
-            }
-        }, 1000);
-    }
-    //Use handler to wait set invisible
-    public void removingMatchedCards(final int[] cardsFlipped, final ImageButton[] imageButtonArray){
-
-        //remove cards and prevent input during the delay
-        for(ImageButton imageButton : imageButtonArray){
-            imageButton.setEnabled(false);
-        }
-
-        delayHandler.postDelayed(new Runnable() {
-            public void run() {
-                imageButtonArray[cardsFlipped[0]].setVisibility(View.INVISIBLE);
-                imageButtonArray[cardsFlipped[1]].setVisibility(View.INVISIBLE);
-
-
-                flipCardDown(cardsFlipped[0] , 2, cardsFlipped);
-                flipCardDown(cardsFlipped[1],2,cardsFlipped);
-
-                for(ImageButton imageButton : imageButtonArray){
-                    imageButton.setEnabled(true);
-                }
-
-                //check to see if the player has won
-                gameOverWin();
-            }
-        }, 1000);
-    }
     //TODO implement how to win
     public static void gameOverWin() {
-        //TODO move to next level.
+        //TODO moving to the next level
     }
-
+    public static int getRandomWithExclusion(Random rnd, int start, int end, ArrayList<Integer> exclude) {
+        int random = start + rnd.nextInt(end - start + 1 - exclude.size());
+        Helper.showLog("Game basic functions : ","random = "+random);
+        for (int ex : exclude) {
+            if (random < ex) {
+                break;
+            }
+            random++;
+        }
+        return random;
+    }
     /**
      * @param range which depends on the selected level
+     * @param ex
      * @return the random number
      */
-    public static int generateRandomNumber(int typeOfGeneration , int num, int maxRange) {
+    public static int generateRandomNumber(int typeOfGeneration , int num, int maxRange, ArrayList<Integer> ex) {
 
         switch (typeOfGeneration) {
             case 0: {
-                randomNum = rand.nextInt(maxRange) + 2;
+                //rand.nextInt(maxRange) + 2;
+                randomNum =  getRandomWithExclusion(rand, 2, maxRange, ex);
                 break;
             }
             case 1: {
@@ -221,16 +156,17 @@ public class GameBasicFunctions {
         int num1;
         int num2;
         int num3; // for division
+        ArrayList<Integer> ex = new ArrayList<Integer>();;
         //TODO generate a random op function.
         switch (randomOp) {
             //0 -> addition, 1-> subtraction, 2-> multiplication, 3-> division.
             case 0: {
-                num1 = generateRandomNumber(1, number, maxRange);
+                num1 = generateRandomNumber(1, number, maxRange, ex);
                 num2 = number - num1;
                 cardContent = valueOf(num1) + "+" + valueOf(num2);
             }
             case 1: {
-                num1 = generateRandomNumber(2, number, maxRange);
+                num1 = generateRandomNumber(2, number, maxRange, ex);
                 num2 = num1 - number;
                 cardContent = valueOf(num1) + "-" + valueOf(num2);
             }
@@ -239,7 +175,7 @@ public class GameBasicFunctions {
                 factors = numFactors(number);
                 int factorIndex;
                 if (factors.length > 1) {
-                    factorIndex = generateRandomNumber(2, 0, factors.length);
+                    factorIndex = generateRandomNumber(2, 0, factors.length,ex);
                     num1 = factors[factorIndex];
                 } else {
                     num1 = number;
@@ -250,14 +186,14 @@ public class GameBasicFunctions {
             }
             case 3: {
 
-                num3 = generateRandomNumber(0, number, maxRange);
+                num3 = generateRandomNumber(0, number, maxRange,ex);
                 int temp = num3 * number;
                 factors = numFactors(temp);
                 int factorIndex;
-                factorIndex = generateRandomNumber(2, 0, factors.length);
+                factorIndex = generateRandomNumber(2, 0, factors.length,ex);
                 //Inorder to make sure that the generated num is within the range, eg: 9 -> 81 / 3 = 27 (27 out of range)
                 while (temp / factors[factorIndex] > maxRange || factors[factorIndex] > maxRange){
-                    factorIndex = generateRandomNumber(2, 0, factors.length);
+                    factorIndex = generateRandomNumber(2, 0, factors.length,ex);
                 }
                 num1 = factors[factorIndex];
                 num2 = temp / num1;
