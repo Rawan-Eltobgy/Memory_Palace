@@ -1,11 +1,17 @@
 package com.example.eltobgy.memorycardgame.activities;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
@@ -20,7 +26,6 @@ import com.example.eltobgy.memorycardgame.utlis.Helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -35,18 +40,19 @@ public class GameScreenActivity extends AppCompatActivity {
 
     public static Card[] cardArray;
     public static int[] cardBacks = GameBasicFunctions.cardBacks;
-    Intent myIntent = getIntent(); // gets the previously created intent
-    public int cardNum = myIntent.getIntExtra("cardsNum", 1);
-    public int cardRange = myIntent.getIntExtra("cardsRange", 0);
-    public int typeOfOperation = myIntent.getIntExtra("typeOfOperation", 0);
-    public int gameType = myIntent.getIntExtra("gameType", 0); //0 figure 1 numerical 2 operational
+    int[] cardWidHigh = new int[2];
+   // Intent myIntent = getIntent(); // gets the previously created intent
+    public int cardNum ;
+    public int cardRange;
+    public int typeOfOperation;
+    public int gameType ; //0 figure 1 numerical 2 operational
     public int numFormat = 0; //TODO edit this.
     Game mGame;
     Card mCard;
-    Random random;
+    Random random = new Random();
     private ToggleButton activeCard;
-    ArrayList<Integer> cardFacesInt;
-    ArrayList<String> cardFacesStr;
+    ArrayList<Integer> cardFacesInt  = new ArrayList<Integer>();
+    ArrayList<String> cardFacesStr = new ArrayList<String>();
     public static int maxRange;
     public static int pairsFound = 0 ;
     public static int uniqueCardCount;
@@ -54,17 +60,25 @@ public class GameScreenActivity extends AppCompatActivity {
     public static int totalCardsNum;
     public int currentGameBack;
     Drawable currentCardBack;
-    private List<Integer> availableCardFaces;
-    private List<String> availableCardFacesOp;
+    Drawable currentCardFront;
+     ArrayList<Integer> availableCardFaces = new ArrayList<Integer>();
+     ArrayList<String> availableCardFacesOp = new ArrayList<String>();
     @BindView(R.id.boardLayout)
     GridLayout boardLayout;
     @BindView(R.id.timer)
     Chronometer timer;
-
+String s2="//";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Helper.showLog(TAG, "On Create.....");
+        Intent myIntent = getIntent();
+         cardNum = myIntent.getIntExtra("cardsNum", 1);
+         cardRange = myIntent.getIntExtra("cardsRange", 0);
+         typeOfOperation = myIntent.getIntExtra("typeOfOperation", 0);
+         gameType = myIntent.getIntExtra("gameType", 0); //0 figure 1 numerical 2 operational
+         numFormat = 0; //TODO edit this.
+
         //TODO remove the testing screen and replace it with leveling up functionality.
         setContentView(R.layout.fragment_board);
         ButterKnife.bind(this);
@@ -75,15 +89,17 @@ public class GameScreenActivity extends AppCompatActivity {
         checkAgainstActiveCard(button); **/
         currentGameBack = (GameBasicFunctions.getRandomBack());
          currentCardBack = this.getResources().getDrawable(currentGameBack);
+         currentCardFront = this.getResources().getDrawable(R.drawable.cardfront);
         mCard = new Card(false,currentGameBack);
         checkGameType();
     }
 //TODO add more dynamic to this method.
     private void checkGameType() {
         initializeBoard();
+        rowsCols = GameBasicFunctions.numOfRowsAndCols(cardNum);
         totalCardsNum =(rowsCols[0]* rowsCols[1]);
         uniqueCardCount =totalCardsNum /2;
-
+Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
         switch (gameType) {
             case 0: {
                 initializeFigureGame();
@@ -102,24 +118,31 @@ public class GameScreenActivity extends AppCompatActivity {
     public void mutualFunctionlity(int gameType){
        
         initNumberOpGame(gameType);
+        addButtonsToGrid(gameType);
+
     }
     public void initializeOperationGame() {
-        mutualFunctionlity(gameType);
+        initNumberOpGame(gameType);
+
         for (int i = 0; i < uniqueCardCount; i++) {
             //TODO adjust randomOp
             //TODO make it avaliableCardsFaces
             //Currently dealing with given parameter -static-. (( for testing ))
-            String cardFace = GameBasicFunctions.generateCard(typeOfOperation, availableCardFaces.get(i), maxRange);
-            cardFacesStr.add(cardFace);
-            cardFacesStr.add(cardFace);
+            String cardFace1 = GameBasicFunctions.generateCard(typeOfOperation, availableCardFaces.get(i), maxRange);
+            String cardFace2 = GameBasicFunctions.generateCard(typeOfOperation, availableCardFaces.get(i), maxRange);
+
+            cardFacesStr.add("("+i+")"+cardFace1);
+            cardFacesStr.add("("+i+")"+cardFace2);
         }
         Collections.shuffle(cardFacesStr);
-
+        addButtonsToGrid(gameType);
     }
     //range num max
     public void initializeNumericalGame() {
-        mutualFunctionlity(gameType);
+        initNumberOpGame(gameType);
         Collections.shuffle(cardFacesStr);
+        addButtonsToGrid(gameType);
+
 
 
     }
@@ -128,21 +151,34 @@ public class GameScreenActivity extends AppCompatActivity {
     public void initializeFigureGame() {
         
         availableCardFaces = FigureFunctionality.initializeCards();
+
         selectCardPoolFigure();
-           addButtonsToGrid();
+           addButtonsToGrid(gameType);
     }
 //checking
     public void initNumberOpGame(int gameType){
         uniqueCardCount = (rowsCols[0]* rowsCols[1])/2;
         maxRange = GameBasicFunctions.getMaxRange(cardRange);
-        for (int i = 0 ; i < uniqueCardCount ; i ++ ){
-            int tempNum = GameBasicFunctions.generateRandomNumber(cardRange, 0,maxRange);
+        int tempNum;
+        for (int i = 0 ; i <= uniqueCardCount ; i ++ ){
+            //TODO check the num.
+            tempNum = GameBasicFunctions.generateRandomNumber(cardRange, 2,maxRange);
+            Helper.showLog(TAG,"temp num"+tempNum);
+            Helper.showLog(TAG,"avaliable card "+availableCardFaces);
+            if(i>0){
+                Helper.showLog(TAG,"The condition is passed");
             while(availableCardFaces.contains(tempNum)) {
-                availableCardFaces.set(i, tempNum);
-            }
+                Helper.showLog(TAG,"Loop");
+                tempNum = GameBasicFunctions.generateRandomNumber(cardRange, 2,maxRange);
+                Helper.showLog(TAG,"maxRange loop"+maxRange);
+                Helper.showLog(TAG,"cardRange loop"+cardRange);
+                Helper.showLog(TAG,"avaliable card loop"+availableCardFaces);
+                Helper.showLog(TAG,"temp num loop"+tempNum);
+              //  availableCardFaces.add(tempNum);
+            }}
             //TODO remove this line (not optimized)
-            availableCardFaces.set(i, tempNum);
-            if (gameType == 2){
+            availableCardFaces.add(tempNum);
+            if (gameType == 1){
                 //inorder to add it twice.
                 cardFacesStr.add(String.valueOf(tempNum));
                 cardFacesStr.add(String.valueOf(tempNum));
@@ -156,6 +192,8 @@ public class GameScreenActivity extends AppCompatActivity {
      * available cards.
      */
     private int getAvailableCardFace() {
+        Helper.showLog(TAG,"card faces size " +String.valueOf(availableCardFaces.size()));
+        Helper.showLog(TAG,"AvailableCardFace "+ String.valueOf(random.nextInt(availableCardFaces.size())));
         return availableCardFaces.remove(random.nextInt(availableCardFaces.size()));
     }
 
@@ -164,24 +202,38 @@ public class GameScreenActivity extends AppCompatActivity {
      * exactly two copies of each card appear on the board
      */
     protected ArrayList<Integer> selectCardPoolFigure() {
+        Helper.showLog(TAG, String.valueOf(availableCardFaces));
+        Helper.showLog(TAG, String.valueOf(rowsCols[0]));
+        uniqueCardCount = (rowsCols[0]* rowsCols[1])/2;
+
+        Helper.showLog(TAG, "uniqueCardCount"+String.valueOf(uniqueCardCount));
+
 
         for (int i = 0; i < uniqueCardCount; i++) {
             int cardFace = getAvailableCardFace();
+            Helper.showLog(TAG,"cardFace"+ String.valueOf(cardFace));
             cardFacesInt.add(cardFace);
             cardFacesInt.add(cardFace);
         }
+        Helper.showLog(TAG, String.valueOf(cardFacesInt));
         Collections.shuffle(cardFacesInt);
         return cardFacesInt;
     }
-    protected void addButtonsToGrid( int columns, int rows, int cardWidth, int gameType) {
+    protected void addButtonsToGrid(final int gameType) {
+        final String[] s1 = {""};
+        final String[] temp = {""};
+       cardWidHigh = calculateCardWidth(rowsCols);
+        timer.setBase(SystemClock.elapsedRealtime());
+        timer.start();
         for (int i = 0; i < totalCardsNum ; i++) {
             final ToggleButton button = new ToggleButton(this);
             //TODO a different approach
             button.setTextOff("");
-            button.setTextOn("");
             button.setBackground(currentCardBack);
             button.setChecked(false);
             button.setId(i);
+            if(gameType == 0){
+            button.setTextOn("");
             button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -189,31 +241,87 @@ public class GameScreenActivity extends AppCompatActivity {
                     if (isChecked) {
                         //TODO remove this.
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
                             button.setBackground(getDrawable(cardFacesInt
                                     .get(button.getId())));
                         }
-                        checkAgainstActiveCard(button);
+                        checkAgainstActiveCard(button,"");
                     } else {
                         button.setBackground(currentCardBack);
                         button.setEnabled(true);
                     }
                 }
-            });
-            boardLayout.addView(button, cardWidth, cardWidth);
+            });}
+            else{
+                button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if (isChecked) {
+                            //TODO remove this.
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                if(gameType == 1){
+                                    Helper.showLog(TAG,"cardFaceStr size" +cardFacesStr.size());
+                                    Helper.showLog(TAG,"cardFaceStr " +cardFacesStr);
+                                button.setTextOn(cardFacesStr.get(button.getId()));}
+                                else
+                                {
+                                    s1[0] = cardFacesStr.get(button.getId());
+                                    Helper.showLog(TAG,"s1 before "+s1[0]);
+                                    temp[0] = s1[0].substring(0,s1[0].indexOf(")")+1);
+                                    String s2 = s1[0].substring(s1[0].indexOf(")")+1);
+                                    s2.trim();
+                                    button.setTextOn(s2);
+                                }
+                                button.setTextS
+                                button.setTextColor(ResourcesCompat.getColor(getResources(), R.color.Black, null));
+                               //TODO adjust this.
+                                button.setBackground(currentCardFront);
+                            }
+                            checkAgainstActiveCard(button, temp[0]);
+                        } else {
+                            button.setBackground(currentCardBack);
+                            button.setEnabled(true);
+                        }
+                    }
+                });
+            }
+             //addView(View child, int width, int height).
+            boardLayout.addView(button, cardWidHigh[0], cardWidHigh[1]);
         }
     }
-    protected void checkAgainstActiveCard(final ToggleButton newFlip) {
+    protected void checkAgainstActiveCard(final ToggleButton newFlip, final String s1) {
         if (activeCard != null) {
             //Found a pair
-            if (activeCard.getBackground().getConstantState().equals(newFlip.getBackground()
-                    .getConstantState())) {
+            if( (activeCard.getBackground().getConstantState().equals(newFlip.getBackground()
+                    .getConstantState())&&(gameType ==0))||((activeCard.getTextOn().equals(newFlip.getTextOn() )&& gameType == 1))||
+                    ((s1.equals(s2))&&(gameType==2))) {
+                Helper.showLog(TAG,"s1 "+s1);
+                Helper.showLog(TAG,"s2 "+s2);
+                //TODO probably will need to add a handler.
                 activeCard.setEnabled(false);
                 newFlip.setEnabled(false);
-                activeCard = null;
+
+
+                s2="//";
                 pairsFound++;
+               // activeCard.setVisibility(View.INVISIBLE);
+                //newFlip.setVisibility(View.INVISIBLE);
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       activeCard.setVisibility(View.INVISIBLE);
+                       newFlip.setVisibility(View.INVISIBLE);
+                        activeCard = null;
+                    }
+                }, 150);
+
                 if (pairsFound == uniqueCardCount) {
                     //TODO next level function.
-                    Helper.showToast(this,"You Win!");
+                    levelCompleted();
+
                 }
             } else { //Did not find a pair
                 final Handler handler = new Handler();
@@ -221,6 +329,8 @@ public class GameScreenActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         activeCard.toggle();
+                        activeCard.setChecked(false);
+                        activeCard.setBackground(currentCardBack);
                         activeCard.setEnabled(true);
                         activeCard = null;
                         newFlip.setChecked(false);
@@ -230,14 +340,41 @@ public class GameScreenActivity extends AppCompatActivity {
                 }, 350);
             }
         } else { //First card to be flipped
+            s2 = s1;
             activeCard = newFlip;
+            activeCard.setChecked(true);
             activeCard.setEnabled(false);
         }
     }
+
+    private void levelCompleted() {
+        Helper.showToast(this,"You Win!");
+    }
+
     public void initializeBoard() {
         rowsCols = GameBasicFunctions.numOfRowsAndCols(cardNum);
         boardLayout.setRowCount(rowsCols[0]);
         boardLayout.setColumnCount(rowsCols[1]);
         
+    }
+    //TODO check , double scalingFactor.
+    //TODO test.
+    protected int[] calculateCardWidth(int[] rowsCols) {
+        //Getting the screen size.
+        Display display = this.getWindowManager().getDefaultDisplay();
+        ViewGroup.LayoutParams p = boardLayout.getLayoutParams();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        //cardWidHigh 0->width , 1 ->height.
+        cardWidHigh[0] = (int) (width / (rowsCols[1] + .25));
+        cardWidHigh[1] = (int) (height / (rowsCols[0] + 2));
+       // textSize =
+        p.width = cardWidHigh[0];
+        p.height = cardWidHigh[1];
+        boardLayout.setLayoutParams(p);
+        boardLayout.getViewParent().invalidate();
+     return cardWidHigh;
     }
 }

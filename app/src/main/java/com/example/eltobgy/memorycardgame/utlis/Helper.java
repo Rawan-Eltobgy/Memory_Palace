@@ -31,4 +31,10 @@ public class Helper {
             return false;
         }
     }
+  /**  public static double stringToOperation(String input) {
+        int result = 0;
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        return (Double)engine.eval(input);
+    }**/
 }

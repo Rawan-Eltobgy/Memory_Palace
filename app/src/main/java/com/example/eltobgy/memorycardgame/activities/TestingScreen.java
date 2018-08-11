@@ -67,9 +67,9 @@ public class TestingScreen extends AppCompatActivity {
     @OnClick(R.id.btn_start)
     public void onViewClicked() {
         if (!etCardsNum.equals("")){cardNum = Integer.parseInt(etCardsNum.getText().toString());}
-        else if(!etNumberRange.equals("")){cardRange = Integer.parseInt(etCardsNum.getText().toString());}
-        else if(!etGameType.equals("")){gameType = Integer.parseInt(etGameType.getText().toString());}
-        else if(!etOperationType.equals("")){typeOfOperation = Integer.parseInt(etOperationType.getText().toString());}
+        if(!etNumberRange.equals("")){cardRange = Integer.parseInt(etCardsNum.getText().toString());}
+        if(!etGameType.equals("")){gameType = Integer.parseInt(etGameType.getText().toString());}
+        if(!etOperationType.equals("")){typeOfOperation = Integer.parseInt(etOperationType.getText().toString());}
         Intent myIntent = new Intent(this, GameScreenActivity.class);
         myIntent.putExtra("cardsNum",cardNum);
         myIntent.putExtra("cardsRange",cardRange);

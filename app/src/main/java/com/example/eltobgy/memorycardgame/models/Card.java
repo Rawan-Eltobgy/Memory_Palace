@@ -89,11 +89,11 @@ public class Card implements Serializable {
         this.frontCard = frontCard;
     }
 
-    public Bitmap getBackCard() {
+    public int getBackCard() {
         return backCard;
     }
 
-    public void setBackCard(Bitmap backCard) {
+    public void setBackCard(int backCard) {
         this.backCard = backCard;
     }
 }

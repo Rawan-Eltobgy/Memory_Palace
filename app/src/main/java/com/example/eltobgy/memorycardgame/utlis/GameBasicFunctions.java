@@ -41,16 +41,21 @@ public class GameBasicFunctions {
     //TODO the numOfFlippedCards? static? or return.
     //cardsNums starting from 1 as a min as 1*8 =8,
     public static int[]numOfRowsAndCols (int cardsNum){
-        int[] rowsCols = new int [1];
+        int[] rowsCols = new int [2];
         int totalCardsNum = cardsNum * 8;
-       boolean perfectSqrt = Helper.checkingPerfectSquare(totalCardsNum);
+        Helper.showLog("GameBasicFunctions", "total cards num " +String.valueOf(totalCardsNum));
+
+        boolean perfectSqrt = Helper.checkingPerfectSquare(totalCardsNum);
        if(perfectSqrt){ rowsCols[0] = (int) Math.sqrt(totalCardsNum);
-           rowsCols[1] = rowsCols[0] ;
+           rowsCols[1] = (int) Math.sqrt(totalCardsNum);
        }
        else{rowsCols[1] = 4;
        //TODO fix this to be more dynamic.
        rowsCols[0] = totalCardsNum/rowsCols[1];}
-      return rowsCols;
+       Helper.showLog("GameBasicFunctions", String.valueOf(rowsCols[0]));
+        Helper.showLog("GameBasicFunctions", String.valueOf(rowsCols[1]));
+
+        return rowsCols;
     }
     public void flipCardUp(int card, int numFlippedCards, int[] selectedCards) {
         if(numFlippedCards <= 2){
@@ -90,8 +95,8 @@ public class GameBasicFunctions {
             public void run() {
                 cardArray[cardsFlipped[0]].setCardFlipped(false);
                 cardArray[cardsFlipped[1]].setCardFlipped(false);
-                imageButtonArray[cardsFlipped[0]].setImageBitmap(cardArray[cardsFlipped[0]].getBackCard());
-                imageButtonArray[cardsFlipped[1]].setImageBitmap(cardArray[cardsFlipped[1]].getBackCard());
+               // imageButtonArray[cardsFlipped[0]].setImageBitmap(cardArray[cardsFlipped[0]].getBackCard());
+               // imageButtonArray[cardsFlipped[1]].setImageBitmap(cardArray[cardsFlipped[1]].getBackCard());
 
                 flipCardDown(cardsFlipped[0] , 2, cardsFlipped);
                 flipCardDown(cardsFlipped[1],2,cardsFlipped);
@@ -132,10 +137,8 @@ public class GameBasicFunctions {
         }, 1000);
     }
     //TODO implement how to win
-    private void gameOverWin() {
-        /** if(remainingCards == 0) && (time>= required) {
-
-         }**/
+    public static void gameOverWin() {
+        //TODO move to next level.
     }
 
     /**
@@ -290,4 +293,5 @@ public class GameBasicFunctions {
 
 
         return maxRange;}
+
 }

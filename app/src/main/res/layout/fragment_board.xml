@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.eltobgy.memorycardgame.fragments.BoardFragment">
 
-    <GridView
+    <GridLayout
         android:id="@+id/boardLayout"
         android:useDefaultMargins="true"
         android:orientation="vertical"
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true">
 
-    </GridView>
+    </GridLayout>
 
     <Chronometer
         android:id="@+id/timer"
