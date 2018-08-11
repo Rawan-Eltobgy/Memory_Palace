@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  * Created by Eltobgy on 26-Jul-18.
  */
 
-public class GameScreenActivity extends AppCompatActivity {
+public class GameScreenActivity extends AppCompatActivity implements LevelClearedDialog.OnCompleteListener  {
     public final String TAG = GameScreenActivity.class.getSimpleName();
 
     public static Card[] cardArray;

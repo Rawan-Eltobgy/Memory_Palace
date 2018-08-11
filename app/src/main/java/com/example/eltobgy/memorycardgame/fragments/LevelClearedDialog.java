@@ -25,7 +25,7 @@ public class LevelClearedDialog extends DialogFragment {
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final OnCompleteListener dialogCompleteListenerSettings = (OnCompleteListener) getActivity();
+       final OnCompleteListener dialogCompleteListenerSettings = (OnCompleteListener) getActivity();
 
         final AlertDialog.Builder dialogWin = new AlertDialog.Builder(getActivity());
 
