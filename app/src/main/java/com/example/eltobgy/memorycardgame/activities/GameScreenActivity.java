@@ -91,9 +91,6 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         ButterKnife.bind(this);
         //initializing the game.
         mGame = new Game(cardNum,cardRange, typeOfOperation,gameType,numFormat);
-        /**              button.setBackground(getActivity().getResources().getDrawable(cardFaces
-                                .get(button.getId())));
-        checkAgainstActiveCard(button); **/
         currentGameBack = (GameBasicFunctions.getRandomBack());
          currentCardBack = this.getResources().getDrawable(currentGameBack);
          currentCardFront = this.getResources().getDrawable(R.drawable.cardfront);
@@ -168,7 +165,7 @@ Helper.showLog(TAG, String.valueOf(typeOfOperation));
         uniqueCardCount = (rowsCols[0]* rowsCols[1])/2;
         maxRange = GameBasicFunctions.getMaxRange(cardRange);
         int tempNum;
-        for (int i = 0 ; i <= uniqueCardCount ; i ++ ){
+        for (int i = 0 ; i < uniqueCardCount ; i ++ ){
             //TODO check the num.
 
             Collections.sort(availableCardFaces);
@@ -176,8 +173,8 @@ Helper.showLog(TAG, String.valueOf(typeOfOperation));
 
             tempNum = GameBasicFunctions.generateRandomNumber(0, 2,maxRange, availableCardFaces);
             Helper.showLog(TAG,"temp num"+tempNum);
-            //Helper.showLog(TAG,"avaliable card "+availableCardFaces);
-            if(i>0){
+           Helper.showLog(TAG,"avaliable card "+availableCardFaces);
+            /**if(i>0){
             while(availableCardFaces.contains(tempNum)) {
                 Helper.showLog(TAG,"Loop");
                 tempNum = GameBasicFunctions.generateRandomNumber(0, 2,maxRange, availableCardFaces);
@@ -186,7 +183,7 @@ Helper.showLog(TAG, String.valueOf(typeOfOperation));
                 Helper.showLog(TAG,"avaliable card loop"+availableCardFaces);
                 Helper.showLog(TAG,"temp num loop"+tempNum);
               //  availableCardFaces.add(tempNum);
-            }}
+            }}**/
             //TODO remove this line (not optimized)
             availableCardFaces.add(tempNum);
             if (gameType == 1){
@@ -346,31 +343,11 @@ Helper.showLog(TAG, String.valueOf(typeOfOperation));
                 flagMatched = false;
                 buttonTemp1 = newFlip;
                 buttonTemp2 = activeCard;
-                //activeCard.toggle();
-               // activeCard.setChecked(false);
-               // activeCard.setBackground(currentCardBack);
-                //activeCard.setEnabled(true);
                 activeCard = null;
-               // buttonTemp.setChecked(false);
-                //buttonTemp.setBackground(currentCardBack);
-                //buttonTemp.setEnabled(true);
-                /**final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        activeCard.toggle();
-                        activeCard.setChecked(false);
-                        activeCard.setBackground(currentCardBack);
-                        activeCard.setEnabled(true);
-                        activeCard = null;
-                        newFlip.setChecked(false);
-                        newFlip.setBackground(currentCardBack);
-                        newFlip.setEnabled(true);
-                    }
-                }, 250);**/
+
             }
         } else { //First card to be flipped
-           // numFlippedCards ++;
+
             Helper.showLog(TAG, String.valueOf(numFlippedCards));
             if((numFlippedCards >= 2 )&& (flagMatched == false)){
                buttonTemp2.toggle();
@@ -388,7 +365,7 @@ Helper.showLog(TAG, String.valueOf(typeOfOperation));
             activeCard.setChecked(true);
             activeCard.setEnabled(false);
             flagMatched = false;
-            //buttonTemp2 = null;
+
         }
     }
 
