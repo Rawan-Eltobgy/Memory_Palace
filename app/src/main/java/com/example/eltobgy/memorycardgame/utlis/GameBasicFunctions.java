@@ -131,8 +131,11 @@ public class GameBasicFunctions {
             while (number % i == 0) {
                 number /= i;
                 factors = Helper.addElementToArray(factors, i);
+            //    Helper.showLog("GameBasicFunction" , "num factors iiiii "+factors[i]);
+
             }
         }
+        Helper.showLog("GameBasicFunction" , "num factors "+factors);
         return factors;
     }
 
@@ -175,16 +178,21 @@ public class GameBasicFunctions {
             }
             case 2: {
                 //inorder to pick a random factor for the number.
+                Helper.showLog("GameBasicFunctions" , "case 2  = "+factors);
                 factors = numFactors(number);
                 int factorIndex;
                 if (factors.length > 1) {
                     factorIndex = generateRandomNumber(2, 0, factors.length,ex);
+                    Helper.showLog("GameBasicFunctions" ,"factor index "+factorIndex);
                     num1 = factors[factorIndex];
                 } else {
                     num1 = number;
                 }
                 num2 = number / num1;
                 cardContent = valueOf(num1) + "*" + valueOf(num2);
+                factors = null ;
+                factors = new int[0];
+
                 break;
             }
             case 3: {
