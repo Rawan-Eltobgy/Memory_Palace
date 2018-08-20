@@ -158,17 +158,20 @@ public class GameBasicFunctions {
         int num3; // for division
         ArrayList<Integer> ex = new ArrayList<Integer>();;
         //TODO generate a random op function.
+        Helper.showLog("GameBasicFunctions","randopmOp"+randomOp);
         switch (randomOp) {
             //0 -> addition, 1-> subtraction, 2-> multiplication, 3-> division.
             case 0: {
                 num1 = generateRandomNumber(1, number, maxRange, ex);
                 num2 = number - num1;
                 cardContent = valueOf(num1) + "+" + valueOf(num2);
+                break;
             }
             case 1: {
                 num1 = generateRandomNumber(2, number, maxRange, ex);
                 num2 = num1 - number;
                 cardContent = valueOf(num1) + "-" + valueOf(num2);
+                break;
             }
             case 2: {
                 //inorder to pick a random factor for the number.

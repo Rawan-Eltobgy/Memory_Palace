@@ -69,7 +69,12 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     GridLayout boardLayout;
     @BindView(R.id.timer)
     Chronometer timer;
-String s2="//";
+    String s2="//";
+    private int numFlippedCards = 0;
+    ToggleButton buttonTemp1 = null;
+    ToggleButton buttonTemp2 = null;
+    private boolean flagMatched = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +85,7 @@ String s2="//";
          typeOfOperation = myIntent.getIntExtra("typeOfOperation", 0);
          gameType = myIntent.getIntExtra("gameType", 0); //0 figure 1 numerical 2 operational
          numFormat = 0; //TODO edit this.
-
+        Helper.showLog(TAG, "type of operation 11111 = "+String.valueOf(typeOfOperation));
         //TODO remove the testing screen and replace it with leveling up functionality.
         setContentView(R.layout.fragment_board);
         ButterKnife.bind(this);
@@ -125,7 +130,7 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
     }
     public void initializeOperationGame() {
         initNumberOpGame(gameType);
-
+Helper.showLog(TAG, String.valueOf(typeOfOperation));
         for (int i = 0; i < uniqueCardCount; i++) {
             //TODO adjust randomOp
             //TODO make it avaliableCardsFaces
@@ -302,7 +307,9 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
         //
     }
     protected void checkAgainstActiveCard(final ToggleButton newFlip, final String s1) {
+        numFlippedCards++;
         if (activeCard != null) {
+            flagMatched = true;
             //Found a pair
             if( (activeCard.getBackground().getConstantState().equals(newFlip.getBackground()
                     .getConstantState())&&(gameType ==0))||((activeCard.getTextOn().equals(newFlip.getTextOn() )&& gameType == 1))||
@@ -336,7 +343,18 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
 
                 }
             } else { //Did not find a pair
-                final Handler handler = new Handler();
+                flagMatched = false;
+                buttonTemp1 = newFlip;
+                buttonTemp2 = activeCard;
+                //activeCard.toggle();
+               // activeCard.setChecked(false);
+               // activeCard.setBackground(currentCardBack);
+                //activeCard.setEnabled(true);
+                activeCard = null;
+               // buttonTemp.setChecked(false);
+                //buttonTemp.setBackground(currentCardBack);
+                //buttonTemp.setEnabled(true);
+                /**final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -349,13 +367,28 @@ Helper.showLog(TAG, "game type **"+String.valueOf(gameType));
                         newFlip.setBackground(currentCardBack);
                         newFlip.setEnabled(true);
                     }
-                }, 250);
+                }, 250);**/
             }
         } else { //First card to be flipped
+           // numFlippedCards ++;
+            Helper.showLog(TAG, String.valueOf(numFlippedCards));
+            if((numFlippedCards >= 2 )&& (flagMatched == false)){
+               buttonTemp2.toggle();
+                buttonTemp2.setChecked(false);
+                buttonTemp2.setBackground(currentCardBack);
+                buttonTemp2.setEnabled(true);
+                buttonTemp2 = null;
+                buttonTemp1.setChecked(false);
+                buttonTemp1.setBackground(currentCardBack);
+                buttonTemp1.setEnabled(true);
+            }
             s2 = s1;
+            numFlippedCards = 1;
             activeCard = newFlip;
             activeCard.setChecked(true);
             activeCard.setEnabled(false);
+            flagMatched = false;
+            //buttonTemp2 = null;
         }
     }
 

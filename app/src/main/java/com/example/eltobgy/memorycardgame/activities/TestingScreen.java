@@ -75,7 +75,7 @@ public class TestingScreen extends AppCompatActivity {
         myIntent.putExtra("cardsRange",cardRange);
         myIntent.putExtra("gameType",gameType);
         myIntent.putExtra("typeOfOperation",typeOfOperation);
-
+        Helper.showLog(TAG,"type of operation"+typeOfOperation);
         startActivity(myIntent);
     }
 
