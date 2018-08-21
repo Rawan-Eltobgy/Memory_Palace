@@ -7,6 +7,7 @@ import com.example.eltobgy.memorycardgame.activities.GameScreenActivity;
 import com.example.eltobgy.memorycardgame.models.Card;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import static java.lang.String.valueOf;
@@ -89,7 +90,7 @@ public class GameBasicFunctions {
             }
             case 1: {
                 //customized range for addition.
-                randomNum = rand.nextInt(num) + 2;
+                randomNum = rand.nextInt(num) + 1;
                 break;
             }
             case 2: {//customized range for subtraction..
@@ -119,23 +120,25 @@ public class GameBasicFunctions {
      * @return an array of factors of number.
      */
     public static int[] numFactors(int number) {
-
-        if (number % 2 == 0) {
-            while (number % 2 == 0) {
-                factors = Helper.addElementToArray(factors, 2);
-                number /= 2;
-            }
-        }
-        for (int i = 3; i * i <= number; i += 2)//odd numbers only
+        // Note that this loop runs till square root
+        for (int i=1; i<=Math.sqrt(number); i++)
         {
-            while (number % i == 0) {
-                number /= i;
-                factors = Helper.addElementToArray(factors, i);
-            //    Helper.showLog("GameBasicFunction" , "num factors iiiii "+factors[i]);
+            if (number%i==0)
+            {
+                // If divisors are equal, print only one
+                if (number/i == i)
+                    factors = Helper.addElementToArray(factors, i);
+                    //System.out.printf("%d ", i);
 
+                else // Otherwise print both
+                    {
+                        factors = Helper.addElementToArray(factors, i);
+                        factors = Helper.addElementToArray(factors, number/i);}
             }
-        }
-        Helper.showLog("GameBasicFunction" , "num factors "+factors);
+                   // System.out.printf("%d %d ", i, number/i);
+            }
+
+        //Helper.showLog("GameBasicFunction" , "num factors "+factors);
         return factors;
     }
 
@@ -153,9 +156,10 @@ public class GameBasicFunctions {
      * @param randomOp
      * @param number -> the previously generated random
      * @param maxRange
+     * @param cardCase
      * @return the card content as a string.
      */
-    public static String generateCard(int randomOp, int number, int maxRange)  {
+    public static String generateCard(int randomOp, int number, int maxRange, int cardCase)  {
         int num1;
         int num2;
         int num3; // for division
@@ -165,8 +169,10 @@ public class GameBasicFunctions {
         switch (randomOp) {
             //0 -> addition, 1-> subtraction, 2-> multiplication, 3-> division.
             case 0: {
+
                 num1 = generateRandomNumber(1, number, maxRange, ex);
                 num2 = number - num1;
+                Helper.showLog("GameBasicFunctions","number = "+number +"num1= "+num1+"num2= "+num2);
                 cardContent = valueOf(num1) + "+" + valueOf(num2);
                 break;
             }
@@ -177,10 +183,19 @@ public class GameBasicFunctions {
                 break;
             }
             case 2: {
+                if(cardCase == 0){
+                factors = null ;
+                factors = new int[0];
                 //inorder to pick a random factor for the number.
-                Helper.showLog("GameBasicFunctions" , "case 2  = "+factors);
+                Helper.showLog("GameBasicFunctions" , "case 2  = "+factors+"CardsCase 000");
                 factors = numFactors(number);
+                    Arrays.sort( factors );}
                 int factorIndex;
+                Helper.showLog("GameBasicFunctions","number"+ number);
+
+                Helper.showLog("GameBasicFunctions","factorLength"+ factors.length);
+                Helper.showLog("GameBasicFunctions","factor Array"+ (Arrays.toString(factors)));
+
                 if (factors.length > 1) {
                     factorIndex = generateRandomNumber(2, 0, factors.length,ex);
                     Helper.showLog("GameBasicFunctions" ,"factor index "+factorIndex);
@@ -190,18 +205,23 @@ public class GameBasicFunctions {
                 }
                 num2 = number / num1;
                 cardContent = valueOf(num1) + "*" + valueOf(num2);
-                factors = null ;
-                factors = new int[0];
-
                 break;
             }
             case 3: {
 
                 num3 = generateRandomNumber(0, number, maxRange,ex);
                 int temp = num3 * number;
+                Helper.showLog("GameBasicFunction","temp @@@@@ = "+temp);
+                if(cardCase == 0){
+                    factors = null ;
+                    factors = new int[0];
                 factors = numFactors(temp);
+                    Arrays.sort(factors);
+                }
                 int factorIndex;
                 factorIndex = generateRandomNumber(2, 0, factors.length,ex);
+
+
                 //Inorder to make sure that the generated num is within the range, eg: 9 -> 81 / 3 = 27 (27 out of range)
                 while (temp / factors[factorIndex] > maxRange || factors[factorIndex] > maxRange){
                     factorIndex = generateRandomNumber(2, 0, factors.length,ex);
