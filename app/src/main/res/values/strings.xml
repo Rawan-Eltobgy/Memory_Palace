@@ -6,4 +6,5 @@
     <string name="level_completed">Level Completed</string>
     <string name="time">Time:</string>
     <string name="next_level">Next Level</string>
+    <string name="steps">Steps:</string>
 </resources>

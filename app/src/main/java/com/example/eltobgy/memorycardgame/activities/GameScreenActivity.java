@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.eltobgy.memorycardgame.R;
@@ -46,7 +47,6 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     public static int[] rowsCols;
     public static int totalCardsNum;
     public final String TAG = GameScreenActivity.class.getSimpleName();
-    // Intent myIntent = getIntent(); // gets the previously created intent
     public int cardNum;
     public int cardRange;
     public int typeOfOperation1;
@@ -68,12 +68,16 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     GridLayout boardLayout;
     @BindView(R.id.timer)
     Chronometer timer;
+    @BindView(R.id.steps)
+    TextView stepsTv;
     String s2 = "//";
     ToggleButton buttonTemp1 = null;
     ToggleButton buttonTemp2 = null;
+
     private ToggleButton activeCard;
     private int numFlippedCards = 0;
     private boolean flagMatched = false;
+    private int gameSteps = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +142,8 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
             //TODO adjust randomOp
             //TODO make it avaliableCardsFaces
             //Currently dealing with given parameter -static-. (( for testing ))
-            String cardFace1 = GameBasicFunctions.generateCard(typeOfOperation1, availableCardFaces.get(i), maxRange,0);
-            String cardFace2 = GameBasicFunctions.generateCard(typeOfOperation2, availableCardFaces.get(i), maxRange,1);
+            String cardFace1 = GameBasicFunctions.generateCard(typeOfOperation1, availableCardFaces.get(i), maxRange, 0);
+            String cardFace2 = GameBasicFunctions.generateCard(typeOfOperation2, availableCardFaces.get(i), maxRange, 1);
 
             cardFacesStr.add("(" + i + ")" + cardFace1);
             cardFacesStr.add("(" + i + ")" + cardFace2);
@@ -301,6 +305,9 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
 
     protected void checkAgainstActiveCard(final ToggleButton newFlip, final String s1) {
         numFlippedCards++;
+        gameSteps++;
+        stepsTv.setText(String.valueOf(gameSteps));
+        Helper.showLog(TAG, "Game Steps " + gameSteps);
         if (activeCard != null) {
             flagMatched = true;
             //Found a pair
@@ -328,8 +335,8 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
                         activeCard = null;
                     }
                 }, 150);
-                Helper.showLog(TAG, "pairsFound = "+pairsFound);
-                Helper.showLog(TAG, "uniqueCardCount = "+uniqueCardCount);
+                Helper.showLog(TAG, "pairsFound = " + pairsFound);
+                Helper.showLog(TAG, "uniqueCardCount = " + uniqueCardCount);
                 if (pairsFound == uniqueCardCount) {
                     //TODO next level function.
                     timer.stop();
