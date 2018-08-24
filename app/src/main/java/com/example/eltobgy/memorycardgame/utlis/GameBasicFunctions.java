@@ -101,20 +101,6 @@ public class GameBasicFunctions {
 
         return randomNum;
     }
-//TODO adjust this method.
-    public boolean doCardsMatch(String card1, String card2, int remainingCards) {
-        if(card1.equals(card2)){
-            remainingCards -= 2;
-           // mediaPlayerMatch.start();
-            Helper.showLog(TAG,"Matched");
-            return true;
-        }
-        else {
-            //mediaPlayerMiss.start();
-            Helper.showLog(TAG,"Not Matched");
-            return false;
-        }
-    }
     /**
      * @param number
      * @return an array of factors of number.
@@ -218,15 +204,22 @@ public class GameBasicFunctions {
                 factors = numFactors(temp);
                     Arrays.sort(factors);
                 }
+                Helper.showLog("GameBasicFunctions", String.valueOf(factors.length));
                 int factorIndex;
-                factorIndex = generateRandomNumber(2, 0, factors.length,ex);
-
-
-                //Inorder to make sure that the generated num is within the range, eg: 9 -> 81 / 3 = 27 (27 out of range)
-                while (temp / factors[factorIndex] > maxRange || factors[factorIndex] > maxRange){
+                if (factors.length > 1) {
                     factorIndex = generateRandomNumber(2, 0, factors.length,ex);
+                    Helper.showLog("GameBasicFunctions" ,"factor index "+factorIndex);
+                    //Inorder to make sure that the generated num is within the range, eg: 9 -> 81 / 3 = 27 (27 out of range)
+                    while (temp / factors[factorIndex] > maxRange || factors[factorIndex] > maxRange){
+                        factorIndex = generateRandomNumber(2, 0, factors.length,ex);
+                    }
+                    num1 = factors[factorIndex];
+                } else {
+                    num1 = number;
                 }
-                num1 = factors[factorIndex];
+             //  factorIndex = generateRandomNumber(2, 0, factors.length,ex);
+
+
                 num2 = temp / num1;
 
                 cardContent = valueOf(num1) + "*" + valueOf(num2) + "/" +valueOf(num3);

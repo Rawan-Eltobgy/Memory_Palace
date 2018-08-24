@@ -90,18 +90,37 @@
         app:layout_constraintTop_toBottomOf="@+id/linear_layout3">
 
         <EditText
-            android:id="@+id/et_operation_type"
+            android:id="@+id/et_operation_type1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Type of operation"
+            android:hint="Type of operation 1"
             android:inputType="number"
             android:maxLines="1"
             android:singleLine="true"
             android:textAllCaps="true" />
 
     </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:id="@+id/linear_layout5"
 
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout4">
+
+        <EditText
+            android:id="@+id/et_operation_type2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Type of operation 2"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAllCaps="true" />
+
+    </android.support.design.widget.TextInputLayout>
     <Button
         android:id="@+id/btn_start"
         style="@style/button"
@@ -111,7 +130,7 @@
         android:background="@drawable/button"
         android:text="Start"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/linear_layout4"
+        app:layout_constraintEnd_toEndOf="@+id/linear_layout5"
         app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -38,10 +38,12 @@ public class TestingScreen extends AppCompatActivity {
     EditText etGameType;
     @BindView(R.id.linear_layout3)
     TextInputLayout linearLayout3;
-    @BindView(R.id.et_operation_type)
-    EditText etOperationType;
-    @BindView(R.id.linear_layout4)
-    TextInputLayout linearLayout4;
+    @BindView(R.id.et_operation_type1)
+    EditText etOperationType1;
+    @BindView(R.id.et_operation_type2)
+    EditText etOperationType2;
+   // @BindView(R.id.linear_layout4)
+   // TextInputLayout linearLayout4;
     @BindView(R.id.btn_start)
     Button startButton;
     @BindView(R.id.linearLayout)
@@ -52,7 +54,8 @@ public class TestingScreen extends AppCompatActivity {
     private Chronometer chronometer;
     private int cardNum = 1; //TODO give them numbers *8, eg: 1*8 =8 , 2*8=16 ...etc.
     private int cardRange = 0;
-    private int typeOfOperation = 0; //TODO check the numbers and make the default no operation.
+    private int typeOfOperation1 = 0; //TODO check the numbers and make the default no operation.
+    private int typeOfOperation2 = 0; //TODO check the numbers and make the default no operation.
     private int gameType = 0; //0-> figure, 1-> numerical , 2->operational.
     private int numFormat = 0;
     @Override
@@ -69,13 +72,16 @@ public class TestingScreen extends AppCompatActivity {
         if (!etCardsNum.equals("")){cardNum = Integer.parseInt(etCardsNum.getText().toString());}
         if(!etNumberRange.equals("")){cardRange = Integer.parseInt(etCardsNum.getText().toString());}
         if(!etGameType.equals("")){gameType = Integer.parseInt(etGameType.getText().toString());}
-        if(!etOperationType.equals("")){typeOfOperation = Integer.parseInt(etOperationType.getText().toString());}
+        if(!etOperationType1.equals("")){typeOfOperation1 = Integer.parseInt(etOperationType1.getText().toString());}
+        if(!etOperationType2.equals("")){typeOfOperation2 = Integer.parseInt(etOperationType2.getText().toString());}
+
         Intent myIntent = new Intent(this, GameScreenActivity.class);
         myIntent.putExtra("cardsNum",cardNum);
         myIntent.putExtra("cardsRange",cardRange);
         myIntent.putExtra("gameType",gameType);
-        myIntent.putExtra("typeOfOperation",typeOfOperation);
-        Helper.showLog(TAG,"type of operation"+typeOfOperation);
+        myIntent.putExtra("typeOfOperation1",typeOfOperation1);
+        myIntent.putExtra("typeOfOperation2",typeOfOperation2);
+        Helper.showLog(TAG,"type of operation2"+typeOfOperation2);
         startActivity(myIntent);
     }
 

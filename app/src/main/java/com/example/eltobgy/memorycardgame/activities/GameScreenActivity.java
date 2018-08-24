@@ -49,7 +49,8 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     // Intent myIntent = getIntent(); // gets the previously created intent
     public int cardNum;
     public int cardRange;
-    public int typeOfOperation;
+    public int typeOfOperation1;
+    public int typeOfOperation2;
     public int gameType; //0 figure 1 numerical 2 operational
     public int numFormat = 0; //TODO edit this.
     public int currentGameBack;
@@ -81,15 +82,17 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         Intent myIntent = getIntent();
         cardNum = myIntent.getIntExtra("cardsNum", 1);
         cardRange = myIntent.getIntExtra("cardsRange", 0);
-        typeOfOperation = myIntent.getIntExtra("typeOfOperation", 0);
+        typeOfOperation1 = myIntent.getIntExtra("typeOfOperation1", 0);
+        typeOfOperation2 = myIntent.getIntExtra("typeOfOperation2", 0);
         gameType = myIntent.getIntExtra("gameType", 0); //0 figure 1 numerical 2 operational
         numFormat = 0; //TODO edit this.
-        Helper.showLog(TAG, "type of operation 11111 = " + String.valueOf(typeOfOperation));
+        Helper.showLog(TAG, "type of operation 11111 = " + String.valueOf(typeOfOperation1));
+        Helper.showLog(TAG, "type of operation 22222 = " + String.valueOf(typeOfOperation2));
         //TODO remove the testing screen and replace it with leveling up functionality.
         setContentView(R.layout.fragment_board);
         ButterKnife.bind(this);
         //initializing the game.
-        mGame = new Game(cardNum, cardRange, typeOfOperation, gameType, numFormat);
+        mGame = new Game(cardNum, cardRange, typeOfOperation1, typeOfOperation2, gameType, numFormat);
         currentGameBack = (GameBasicFunctions.getRandomBack());
         currentCardBack = this.getResources().getDrawable(currentGameBack);
         currentCardFront = this.getResources().getDrawable(R.drawable.cardfront);
@@ -130,13 +133,13 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
 
     public void initializeOperationGame() {
         initNumberOpGame(gameType);
-        Helper.showLog(TAG, String.valueOf(typeOfOperation));
+        Helper.showLog(TAG, String.valueOf(typeOfOperation1));
         for (int i = 0; i < uniqueCardCount; i++) {
             //TODO adjust randomOp
             //TODO make it avaliableCardsFaces
             //Currently dealing with given parameter -static-. (( for testing ))
-            String cardFace1 = GameBasicFunctions.generateCard(typeOfOperation, availableCardFaces.get(i), maxRange,0);
-            String cardFace2 = GameBasicFunctions.generateCard(typeOfOperation, availableCardFaces.get(i), maxRange,1);
+            String cardFace1 = GameBasicFunctions.generateCard(typeOfOperation1, availableCardFaces.get(i), maxRange,0);
+            String cardFace2 = GameBasicFunctions.generateCard(typeOfOperation2, availableCardFaces.get(i), maxRange,1);
 
             cardFacesStr.add("(" + i + ")" + cardFace1);
             cardFacesStr.add("(" + i + ")" + cardFace2);
@@ -177,17 +180,6 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
             tempNum = GameBasicFunctions.generateRandomNumber(0, 2, maxRange, availableCardFaces);
             Helper.showLog(TAG, "temp num" + tempNum);
             Helper.showLog(TAG, "avaliable card " + availableCardFaces);
-            /**if(i>0){
-             while(availableCardFaces.contains(tempNum)) {
-             Helper.showLog(TAG,"Loop");
-             tempNum = GameBasicFunctions.generateRandomNumber(0, 2,maxRange, availableCardFaces);
-             Helper.showLog(TAG,"maxRange loop"+maxRange);
-             Helper.showLog(TAG,"cardRange loop"+cardRange);
-             Helper.showLog(TAG,"avaliable card loop"+availableCardFaces);
-             Helper.showLog(TAG,"temp num loop"+tempNum);
-             //  availableCardFaces.add(tempNum);
-             }}**/
-            //TODO remove this line (not optimized)
             availableCardFaces.add(tempNum);
             if (gameType == 1) {
                 //inorder to add it twice.
