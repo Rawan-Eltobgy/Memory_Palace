@@ -1,6 +1,5 @@
 package com.example.eltobgy.memorycardgame.activities;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -16,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -33,6 +33,7 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Eltobgy on 26-Jul-18.
@@ -73,6 +74,10 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     String s2 = "//";
     ToggleButton buttonTemp1 = null;
     ToggleButton buttonTemp2 = null;
+    @BindView(R.id.next_level)
+    ImageView nextLevel;
+    @BindView(R.id.next_level_activated)
+    ImageView nextLevelActivated;
 
     private ToggleButton activeCard;
     private int numFlippedCards = 0;
@@ -374,15 +379,17 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     }
 
     private void levelCompleted() {
+        nextLevel.setVisibility(View.GONE);
+        nextLevelActivated.setVisibility(View.VISIBLE);
         Helper.showToast(this, "You Win!");
         Bundle args = new Bundle();
         // args.putInt("score", scoreValue);
         args.putString("time", timer.getText().toString());
         // args.putString("type", type);
-        DialogFragment winDialog = new LevelClearedDialog();
+       /** DialogFragment winDialog = new LevelClearedDialog();
         winDialog.setArguments(args);
         winDialog.setCancelable(false);
-        winDialog.show(getFragmentManager(), "Settings Dialog");
+        winDialog.show(getFragmentManager(), "Settings Dialog");**/
     }
 
     public void onComplete(Bundle callbackData) {
@@ -390,6 +397,7 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
 
         if (dialogName.equals("nextlevel")) {
             Helper.showLog(TAG, "Level up");
+            Helper.showToast(this, "LEVEL UP");
         } else if (dialogName.equals("mainMenu")) {
             Intent myIntent = new Intent(this, TestingScreen.class);
             startActivity(myIntent);
@@ -420,13 +428,21 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         int width = size.x;
         int height = size.y;
         //cardWidHigh 0->width , 1 ->height.
-        cardWidHigh[0] = (int) (width / (rowsCols[1] + .25));
-        cardWidHigh[1] = (int) (height / (rowsCols[0] + 2));
+        cardWidHigh[0] = (int) (width / (rowsCols[1] + .5));
+        cardWidHigh[1] = (int) (height / (rowsCols[0] + .5));
         // textSize =
         // p.width = cardWidHigh[0];
         // p.height = cardWidHigh[1];
         //boardLayout.setLayoutParams(p);
         //boardLayout.getViewParent().invalidate();
         return cardWidHigh;
+    }
+
+
+
+    @OnClick(R.id.next_level_activated)
+    public void onViewClicked() {
+        Helper.showLog(TAG, "Level up");
+        Helper.showToast(this, "LEVEL UP");
     }
 }
