@@ -452,6 +452,8 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
          cardFacesInt.clear();
          cardFacesStr.clear();
          availableCardFaces.clear();
+         nextLevel.setVisibility(View.VISIBLE);
+         nextLevelActivated.setVisibility(View.INVISIBLE);
          boardLayout.removeAllViews();
     }
 
