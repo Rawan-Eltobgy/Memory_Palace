@@ -61,28 +61,30 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     Random random = new Random();
     ArrayList<Integer> cardFacesInt = new ArrayList<Integer>();
     ArrayList<String> cardFacesStr = new ArrayList<String>();
-    Drawable currentCardBack;
-    Drawable currentCardFront;
     ArrayList<Integer> availableCardFaces = new ArrayList<Integer>();
     ArrayList<String> availableCardFacesOp = new ArrayList<String>();
+    Drawable currentCardBack;
+    Drawable currentCardFront;
     @BindView(R.id.boardLayout)
     GridLayout boardLayout;
     @BindView(R.id.timer)
     Chronometer timer;
     @BindView(R.id.steps)
     TextView stepsTv;
-    String s2 = "//";
-    ToggleButton buttonTemp1 = null;
-    ToggleButton buttonTemp2 = null;
     @BindView(R.id.next_level)
     ImageView nextLevel;
     @BindView(R.id.next_level_activated)
     ImageView nextLevelActivated;
+    @BindView(R.id.replay_level)
+    ImageView replayLevel;
 
     private ToggleButton activeCard;
     private int numFlippedCards = 0;
     private boolean flagMatched = false;
     private int gameSteps = 0;
+    String s2 = "//";
+    ToggleButton buttonTemp1 = null;
+    ToggleButton buttonTemp2 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,10 +388,10 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         // args.putInt("score", scoreValue);
         args.putString("time", timer.getText().toString());
         // args.putString("type", type);
-       /** DialogFragment winDialog = new LevelClearedDialog();
-        winDialog.setArguments(args);
-        winDialog.setCancelable(false);
-        winDialog.show(getFragmentManager(), "Settings Dialog");**/
+        /** DialogFragment winDialog = new LevelClearedDialog();
+         winDialog.setArguments(args);
+         winDialog.setCancelable(false);
+         winDialog.show(getFragmentManager(), "Settings Dialog");**/
     }
 
     public void onComplete(Bundle callbackData) {
@@ -440,9 +442,30 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
 
 
 
+    public void reintializeVars() {
+         s2 = "//";
+         gameSteps = 0;
+         numFlippedCards = 0;
+         stepsTv.setText(String.valueOf(gameSteps));
+        // buttonTemp1 = null;
+        // buttonTemp2 = null;
+         cardFacesInt.clear();
+         cardFacesStr.clear();
+         availableCardFaces.clear();
+         boardLayout.removeAllViews();
+    }
+
+    @OnClick(R.id.replay_level)
+    public void onReplayLevelClicked() {
+        mGame = new Game(cardNum, cardRange, typeOfOperation1, typeOfOperation2, gameType, numFormat);
+        reintializeVars();
+        checkGameType();
+
+    }
     @OnClick(R.id.next_level_activated)
-    public void onViewClicked() {
+    public void onNextLevelActivatedClicked() {
         Helper.showLog(TAG, "Level up");
         Helper.showToast(this, "LEVEL UP");
     }
+
 }
