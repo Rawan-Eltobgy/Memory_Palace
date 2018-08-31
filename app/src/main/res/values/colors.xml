@@ -6,5 +6,6 @@
     <color name="colorSecondary">#FF4080</color>
     <color name="Black">#000000</color>
     <color name="vivid_green">#00FF00</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,11 +78,18 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     ImageView nextLevelActivated;
     @BindView(R.id.replay_level)
     ImageView replayLevel;
+    @BindView(R.id.backArrow)
+    ImageView backArrow;
+    @BindView(R.id.detailsToolBar)
+    Toolbar detailsToolBar;
+
 
     private ToggleButton activeCard;
     private int numFlippedCards = 0;
     private boolean flagMatched = false;
     private int gameSteps = 0;
+    int heightConstraintLayout = 0;
+    int width = 0;
     String s2 = "//";
     ToggleButton buttonTemp1 = null;
     ToggleButton buttonTemp2 = null;
@@ -103,6 +111,8 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         setContentView(R.layout.fragment_board);
         ButterKnife.bind(this);
         //initializing the game.
+
+
         mGame = new Game(cardNum, cardRange, typeOfOperation1, typeOfOperation2, gameType, numFormat);
         currentGameBack = (GameBasicFunctions.getRandomBack());
         currentCardBack = this.getResources().getDrawable(currentGameBack);
@@ -235,9 +245,12 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     }
 
     protected void addButtonsToGrid(final int gameType) {
+
+        Helper.showLog(TAG,"addbuttonstoGRID");
         final String[] s1 = {""};
         final String[] temp = {""};
         cardWidHigh = calculateCardWidth(rowsCols);
+        Helper.showLog(TAG,"Card Width " +cardWidHigh[0] +"Card Height " + cardWidHigh[1]);
         pairsFound = 0;
         for (int i = 0; i < totalCardsNum; i++) {
             Helper.showLog(TAG, " i = " + i);
@@ -407,9 +420,14 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         }
     }
 
+    @Override
     public void onBackPressed() {
-        //TODO return to main or testing screen fn.
-        //android back button has been pressed
+        super.onBackPressed();
+    }
+
+    @OnClick(R.id.backArrow)
+    public void onViewClicked() {
+        onBackPressed();
     }
 
     public void initializeBoard() {
@@ -422,39 +440,44 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
     //TODO check , double scalingFactor.
     //TODO test.
     protected int[] calculateCardWidth(int[] rowsCols) {
-        //Getting the screen size.
-        Display display = this.getWindowManager().getDefaultDisplay();
-        ViewGroup.LayoutParams p = boardLayout.getLayoutParams();
         Point size = new Point();
+         Display display = boardLayout.getDisplay();
+        // Helper.showLog(TAG, " display "+display);
+        //display.getSize(size);
+        // heightConstraintLayout = size.y;
+        //Getting the screen size.
+        display = this.getWindowManager().getDefaultDisplay();
+        ViewGroup.LayoutParams p = boardLayout.getLayoutParams();
         display.getSize(size);
         int width = size.x;
         int height = size.y;
+        int halfScreenWidth = (int) (width * 0.5);
+        int quarterScreenWidth = (int) (halfScreenWidth * 0.5);
+
         //cardWidHigh 0->width , 1 ->height.
-        cardWidHigh[0] = (int) (width / (rowsCols[1] + .5));
-        cardWidHigh[1] = (int) (height / (rowsCols[0] + .5));
+        cardWidHigh[0] = (int) (width / (rowsCols[1] + .25));
+        cardWidHigh[1] = (int) (height / (rowsCols[0] + 1.5));
         // textSize =
         // p.width = cardWidHigh[0];
         // p.height = cardWidHigh[1];
-        //boardLayout.setLayoutParams(p);
+        // boardLayout.setLayoutParams(p);
         //boardLayout.getViewParent().invalidate();
         return cardWidHigh;
     }
 
-
-
     public void reintializeVars() {
-         s2 = "//";
-         gameSteps = 0;
-         numFlippedCards = 0;
-         stepsTv.setText(String.valueOf(gameSteps));
+        s2 = "//";
+        gameSteps = 0;
+        numFlippedCards = 0;
+        stepsTv.setText(String.valueOf(gameSteps));
         // buttonTemp1 = null;
         // buttonTemp2 = null;
-         cardFacesInt.clear();
-         cardFacesStr.clear();
-         availableCardFaces.clear();
-         nextLevel.setVisibility(View.VISIBLE);
-         nextLevelActivated.setVisibility(View.INVISIBLE);
-         boardLayout.removeAllViews();
+        cardFacesInt.clear();
+        cardFacesStr.clear();
+        availableCardFaces.clear();
+        nextLevel.setVisibility(View.VISIBLE);
+        nextLevelActivated.setVisibility(View.INVISIBLE);
+        boardLayout.removeAllViews();
     }
 
     @OnClick(R.id.replay_level)
@@ -464,6 +487,7 @@ public class GameScreenActivity extends AppCompatActivity implements LevelCleare
         checkGameType();
 
     }
+
     @OnClick(R.id.next_level_activated)
     public void onNextLevelActivatedClicked() {
         Helper.showLog(TAG, "Level up");

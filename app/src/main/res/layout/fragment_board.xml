@@ -1,92 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.eltobgy.memorycardgame.fragments.BoardFragment">
+    tools:context="com.example.eltobgy.memorycardgame.fragments.BoardFragment"
+    android:orientation="vertical">
+
+
+    <include
+    layout="@layout/snippet_top_gametoolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
     <GridLayout
         android:id="@+id/boardLayout"
         android:useDefaultMargins="true"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
 
     </GridLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
-
-        <Chronometer
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textColor="#000000"
-            android:textSize="35sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/steps"
-            app:layout_constraintStart_toStartOf="@+id/steps" />
-
-        <TextView
-            android:id="@+id/steps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:gravity="center_horizontal"
-            android:paddingLeft="200dp"
-            android:text="@string/_0"
-            android:textAlignment="center"
-            android:textSize="35sp"
-            android:textStyle="bold"
-            android:typeface="serif"
-            android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/replay_level"
-             />
-
-        <ImageView
-            android:id="@+id/replay_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_replay_level"
-            android:visibility="visible"
-            app:layout_constraintStart_toEndOf="@+id/steps"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <ImageView
-            android:id="@+id/next_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="8dp"
-            android:gravity="end"
-            android:src="@drawable/ic_next_level"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/replay_level"
-             app:layout_constraintBottom_toBottomOf="parent" />
-
-        <ImageView
-            android:id="@+id/next_level_activated"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_margin="8dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_next_level_activated"
-            android:visibility="invisible"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/replay_level"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-
-    </android.support.constraint.ConstraintLayout>
-</FrameLayout>
+</LinearLayout>

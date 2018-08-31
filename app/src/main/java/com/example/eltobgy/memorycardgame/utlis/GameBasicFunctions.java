@@ -30,6 +30,7 @@ public class GameBasicFunctions {
             R.drawable.card2,
             R.drawable.card3,
     };
+
     //TODO test this method.
     public static int getRandomBack(){
         ArrayList<Integer> ex = new ArrayList<Integer>();
@@ -46,8 +47,23 @@ public class GameBasicFunctions {
         int[] rowsCols = new int [2];
         int totalCardsNum = cardsNum * 8;
         Helper.showLog("GameBasicFunctions", "total cards num " +String.valueOf(totalCardsNum));
-
+        if (totalCardsNum == 8){
+            rowsCols[0] = 4;
+            rowsCols[1] = 2;
+            return rowsCols;
+        }
+        else if (totalCardsNum == 16){
+            rowsCols[0] = 8;
+            rowsCols[1] = 2;
+            return rowsCols;
+        }
+        else if (totalCardsNum == 32){
+            rowsCols[0] = 8;
+            rowsCols[1] = 4;
+            return rowsCols;
+        }
         boolean perfectSqrt = Helper.checkingPerfectSquare(totalCardsNum);
+
        if(perfectSqrt){ rowsCols[0] = (int) Math.sqrt(totalCardsNum);
            rowsCols[1] = (int) Math.sqrt(totalCardsNum);
        }
